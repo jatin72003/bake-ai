@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baking AI - Smart Baking Assistant</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #ff6b6b;
+      --secondary-color: #794bc4;
+      --accent-color: #ffa62b;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+    
+    .navbar {
+      background: linear-gradient(135deg, rgba(121, 75, 196, 0.9) 0%, rgba(255, 107, 107, 0.9) 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: white !important;
+    }
+    
+    .navbar-brand i {
+      margin-right: 8px;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .nav-link {
+      color: white !important;
+      font-weight: 500;
+      margin: 0 10px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: white;
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover:after {
+      width: 100%;
+    }
+    
+    .hero {
+      background: linear-gradient(135deg, #794bc4 0%, #ff6b6b 100%);
+      color: white;
+      padding: 8rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('/api/placeholder/1200/800') center/cover no-repeat;
+      opacity: 0.1;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 80%;
+      margin: 0 auto 2rem;
+    }
+    
+    .btn-primary {
+      background: var(--accent-color);
+      border: none;
+      padding: 12px 30px;
+      font-weight: 600;
+      border-radius: 50px;
+      box-shadow: 0 6px 15px rgba(255, 166, 43, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 166, 43, 0.6);
+      background: #ff9500;
+    }
+    
+    .btn-outline-light {
+      border-radius: 50px;
+      padding: 12px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-left: 15px;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    
+    .section-title h2 {
+      font-weight: 700;
+      color: var(--dark-color);
+      margin-bottom: 1rem;
+    }
+    
+    .section-title:after {
+      content: '';
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+    
+    .features, .recipe-generator {
+      padding: 6rem 0;
+      background-color: var(--light-color);
+    }
+    
+    .feature-card {
+      padding: 2rem;
+      border-radius: 12px;
+      background: white;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      height: 100%;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-bottom: 1.5rem;
+      color: white;
+      font-size: 1.8rem;
+      box-shadow: 0 5px 15px rgba(121, 75, 196, 0.3);
+    }
+    
+    .how-it-works {
+      padding: 6rem 0;
+      background: linear-gradient(135deg, rgba(121, 75, 196, 0.05) 0%, rgba(255, 107, 107, 0.05) 100%);
+    }
+    
+    .step-card {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3rem;
+      transition: all 0.4s ease;
+    }
+    
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .testimonials {
+      padding: 6rem 0;
+      background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+      color: white;
+    }
+    
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 1rem;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .testimonial-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+    }
+    
+    .quote-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      opacity: 0.2;
+      font-size: 2rem;
+    }
+    
+    .cta {
+      padding: 6rem 0;
+      background: url('/api/placeholder/1200/600') center/cover no-repeat;
+      position: relative;
+      color: white;
+    }
+    
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(121, 75, 196, 0.9) 0%, rgba(255, 107, 107, 0.9) 100%);
+    }
+    
+    .cta-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    footer {
+      background: var(--dark-color);
+      padding: 4rem 0 2rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .footer-link {
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 0.3s ease;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+    
+    .footer-link:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+    
+    .social-links a {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-radius: 50%;
+      margin-right: 10px;
+      text-align: center;
+      line-height: 40px;
+      transition: all 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      background: white;
+      color: var(--secondary-color);
+      transform: translateY(-3px);
+    }
+    
+    .copyright {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 3rem;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .recipe-form, .recipe-result {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 992px) {
+      .hero h1 { font-size: 2.8rem; }
+      .hero p { max-width: 100%; }
+      .feature-card { margin-bottom: 2rem; }
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.2rem; }
+      .hero { padding: 5rem 0; }
+      .btn-outline-light { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#"><i class="fas fa-cookie-bite"></i> Baking AI</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+          <li class="nav-item"><a class="nav-link" href="#demo">Try Demo</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link btn btn-outline-light px-4 py-2" href="#signup">Sign Up</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container text-center">
+      <div data-aos="fade-up" data-aos-delay="100">
+        <h1>Perfect Baking with AI Technology</h1>
+        <p>Let artificial intelligence transform your baking experience. Create perfect recipes, get personalized tips, and become a better baker.</p>
+        <div>
+          <a href="#demo" class="btn btn-primary">Try Demo</a>
+          <a href="#features" class="btn btn-outline-light">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2>Smart Baking Features</h2>
+        <p>Discover how AI can transform your baking experience</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+            <h3>Recipe Generation</h3>
+            <p>Create custom recipes based on ingredients you have, dietary restrictions, or flavor preferences.</p>
+            <a href="#" class="btn btn-sm btn-outline-secondary mt-3">Learn More</a>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-balance-scale"></i></div>
+            <h3>Ingredient Conversion</h3>
+            <p>Automatically convert measurements, substitute ingredients, and adjust recipe quantities.</p>
+            <a href="#" class="btn btn-sm btn-outline-secondary mt-3">Learn More</a>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-diagnoses"></i></div>
+            <h3>Troubleshooting</h3>
+            <p>Get real-time help when your baking doesn't go as planned with AI diagnostics.</p>
+            <a href="#" class="btn btn-sm btn-outline-secondary mt-3">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2>How Baking AI Works</h2>
+        <p>Get started in just three simple steps</p>
+      </div>
+      
+      <div class="row align-items-center">
+        <div class="col-lg-6" data-aos="fade-right">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Describe Your Baking Goals</h3>
+              <p>Tell our AI what you want to bake, your available ingredients, or your dietary restrictions.</p>
+            </div>
+          </div>
+          
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Get Personalized Recipes</h3>
+              <p>Our AI generates custom recipes tailored to your requirements and experience level.</p>
+            </div>
+          </div>
+          
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Bake With Confidence</h3>
+              <p>Follow step-by-step instructions and get real-time help whenever you need it.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-6 text-center" data-aos="fade-left">
+          <img src="https://plus.unsplash.com/premium_photo-1663126325483-886b1a08ba8e?q=80&w=1957&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="How Baking AI Works" class="img-fluid rounded animate-float">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Recipe Generator -->
+  <section class="recipe-generator" id="demo">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2>Try Our Recipe Generator</h2>
+        <p>Experience the power of Baking AI with our demo recipe generator</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-5" data-aos="fade-right">
+          <div class="recipe-form">
+            <h3 class="mb-4">What would you like to bake?</h3>
+            <form id="recipe-form">
+              <div class="mb-3">
+                <label for="recipeType" class="form-label">Type of Recipe</label>
+                <select class="form-select" id="recipeType">
+                  <option selected>Choose recipe type</option>
+                  <option value="cookies">Cookies</option>
+                  <option value="cake">Cake</option>
+                  <option value="bread">Bread</option>
+                  <option value="muffins">Muffins</option>
+                  <option value="pie">Pie</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Dietary Restrictions</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="glutenFree">
+                  <label class="form-check-label" for="glutenFree">Gluten-Free</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dairyFree">
+                  <label class="form-check-label" for="dairyFree">Dairy-Free</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="vegan">
+                  <label class="form-check-label" for="vegan">Vegan</label>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="difficulty" class="form-label">Difficulty Level</label>
+                <input type="range" class="form-range" min="1" max="5" id="difficulty">
+                <div class="d-flex justify-content-between">
+                  <small>Beginner</small>
+                  <small>Advanced</small>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="flavors" class="form-label">Flavor Preferences</label>
+                <input type="text" class="form-control" id="flavors" placeholder="e.g., chocolate, lemon, vanilla">
+              </div>
+              
+              <button type="button" class="btn btn-primary w-100" id="generateRecipe">Generate Recipe</button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="col-lg-7" data-aos="fade-left">
+          <div class="recipe-result">
+            <h3 class="mb-4">Your Custom Recipe</h3>
+            <div id="recipeContainer">
+              <div class="text-center p-5">
+                <i class="fas fa-cookie text-secondary" style="font-size: 3rem;"></i>
+                <p class="mt-3">Select options and click "Generate Recipe" to see your custom recipe appear here.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <h2>What Our Users Say</h2>
+        <p>Join thousands of happy bakers using our AI platform</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="testimonial-card">
+            <i class="fas fa-quote-right quote-icon"></i>
+            <div class="d-flex align-items-center mb-3">
+              <img src="/api/placeholder/100/100" alt="User" class="me-3">
+              <div>
+                <h5 class="mb-0">Sarah Johnson</h5>
+                <small>Home Baker</small>
+              </div>
+            </div>
+            <p>"Baking AI completely transformed my baking. I went from burning cookies to making perfect sourdough bread in just a few weeks!"</p>
+            <div class="mt-2">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="testimonial-card">
+            <i class="fas fa-quote-right quote-icon"></i>
+            <div class="d-flex align-items-center mb-3">
+              <img src="/api/placeholder/100/100" alt="User" class="me-3">
+              <div>
+                <h5 class="mb-0">Michael Chen</h5>
+                <small>Pastry Chef</small>
+              </div>
+            </div>
+            <p>"Even as a professional, I've learned new techniques and flavor combinations. The AI suggestions helped me create award-winning desserts for my restaurant."</p>
+            <div class="mt-2">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star-half-alt text-warning"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="testimonial-card">
+            <i class="fas fa-quote-right quote-icon"></i>
+            <div class="d-flex align-items-center mb-3">
+              <img src="/api/placeholder/100/100" alt="User" class="me-3">
+              <div>
+                <h5 class="mb-0">Emily Rodriguez</h5>
+                <small>Baking Enthusiast</small>
+              </div>
+            </div>
+            <p>"The troubleshooting feature is a lifesaver! When my cakes weren't rising properly, the AI diagnosed the issue immediately and my next attempt was perfect."</p>
+            <div class="mt-2">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="signup">
+    <div class="container text-center">
+      <div class="cta-content" data-aos="zoom-in">
+        <h2 class="mb-4">Ready to Transform Your Baking?</h2>
+        <p class="mb-4">Join thousands of bakers who have elevated their skills with Baking AI.</p>
+        <form class="row justify-content-center">
+          <div class="col-md-6 col-lg-4 mb-3">
+            <input type="email" class="form-control form-control-lg" placeholder="Your email address">
+          </div>
+          <div class="col-md-auto">
+            <button type="submit" class="btn btn-primary btn-lg">Get Started Free</button>
+          </div>
+        </form>
+        <p class="mt-3"><small>14-day free trial, no credit card required</small></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <h4 class="mb-4"><i class="fas fa-cookie-bite"></i> Baking AI</h4>
+          <p>Transforming home baking with the power of artificial intelligence.</p>
+          <div class="social-links mt-4">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h5 class="mb-3">Features</h5>
+          <a href="#" class="footer-link">Recipe Generator</a>
+          <a href="#" class="footer-link">Conversions</a>
+          <a href="#" class="footer-link">Troubleshooting</a>
+          <a href="#" class="footer-link">Learning Paths</a>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4">
+          <h5 class="mb-3">Company</h5>
+          <a href="#" class="footer-link">About Us</a>
+          <a href="#" class="footer-link">Careers</a>
+          <a href="#" class="footer-link">Press</a>
+          <a href="#" class="footer-link">Blog</a>
+        </div>
+        <div class="col-lg-4 col-md-4 mb-4">
+          <h5 class="mb-3">Stay Updated</h5>
+          <p>Subscribe to our newsletter for baking tips and updates.</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Your email">
+            <button class="btn btn-primary" type="button">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="copyright text-center">
+        <p>&copy; 2025 Baking AI. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    // Initialize AOS animations
+    document.addEventListener('DOMContentLoaded', function() {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+      
+      // Demo recipe generation functionality
+      document.getElementById('generateRecipe').addEventListener('click', function() {
+        const recipeType = document.getElementById('recipeType').value;
+        if (recipeType === 'Choose recipe type') {
+          alert('Please select a recipe type');
+          return;
+        }
+        
+        const container = document.getElementById('recipeContainer');
+        container.innerHTML = `
+          <h4>${recipeType.charAt(0).toUpperCase() + recipeType.slice(1)} Recipe</h4>
+          <div class="my-4">
+            <h5>Chocolate Chip ${recipeType.charAt(0).toUpperCase() + recipeType.slice(1)}</h5>
+            <p class="text-muted">AI-generated recipe based on your preferences</p>
+            <div class="row mt-4">
+              <div class="col-md-6">
+                <h6>Ingredients:</h6>
+                <ul>
+                  <li>2 cups all-purpose flour</li>
+                  <li>1/2 teaspoon baking soda</li>
+                  <li>1/2 teaspoon salt</li>
+                  <li>3/4 cup unsalted butter, melted</li>
+                  <li>1 cup packed brown sugar</li>
+                  <li>1/2 cup white sugar</li>
+                  <li>1 tablespoon vanilla extract</li>
+                  <li>1 egg</li>
+                  <li>1 egg yolk</li>
+                  <li>2 cups chocolate chips</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <h6>Instructions:</h6>
+                <ol>
+                  <li>Preheat oven to 325°F (165°C)</li>
+                  <li>Mix flour, baking soda, and salt</li>
+                  <li>Cream together melted butter and sugars</li>
+                  <li>Beat in vanilla, egg, and egg yolk</li>
+                  <li>Mix in dry ingredients</li>
+                  <li>Stir in chocolate chips</li>
+                  <li>Bake for 15-17 minutes</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
